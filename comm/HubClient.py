@@ -1,3 +1,5 @@
+import appdirs
+import cfg_load
 import base64
 from comm.MultiplexedConnectionMonitor import MultiplexedConnectionMonitor
 from utils.LockedCounter import LockedCounter
@@ -5,6 +7,7 @@ from comm.NullConnection import NullConnection
 import datetime
 import json
 import logging
+import os, os.path
 from events import Events
 from queue import Queue
 from enum import Enum
@@ -12,11 +15,16 @@ from enum import Enum
 
 logger = logging.getLogger(__name__)
 
-LINE_ENCODING = 'utf-8'
+config_file = os.path.join(appdirs.user_config_dir('lego-hub-tk'), 'lego_hub.yaml')
+if os.path.exists(config_file):
+    logger.info('Loading configuration from %s', config_file)
+    config = cfg_load.load(config_file)
+else:
+    # dummy config
+    logger.warn('Configuration file does not exist: %s', config_file)
+    config = {'bluetooth': {'address': None, 'port': 0}}
 
-# Bluetooth address/port sought TODO - put into runtime configuration
-bt_address = '38:0B:3C:AA:B6:CE'
-bt_port = 1
+LINE_ENCODING = 'utf-8'
 
 
 class ConnectionState(Enum):
@@ -37,7 +45,7 @@ class HubClient(object):
     
     """
 
-    def __init__(self, cm = MultiplexedConnectionMonitor(bt_address, bt_port)):
+    def __init__(self, cm = MultiplexedConnectionMonitor(config['bluetooth']['address'], config['bluetooth']['port'])):
         self._response_queue = Queue()
         self.events = Events(('connection_state_changed', 'telemetry_update'))
         self._id_counter = LockedCounter(1000)

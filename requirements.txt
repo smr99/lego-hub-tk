@@ -1,3 +1,5 @@
+appdirs
+cfg_load
 events 
 pybluez 
 pyqt5 

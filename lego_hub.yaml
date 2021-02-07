@@ -1,0 +1,7 @@
+# Settings for the LEGO hub
+
+# Set the BlueTooth address and port of the RFCOMM function.
+
+bluetooth:
+  address: '38:0B:3C:AA:B6:CE'
+  port: 1
