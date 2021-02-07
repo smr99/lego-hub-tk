@@ -50,7 +50,10 @@ Slot Decoded Name                               Size Last Modified        Projec
 Additional configuration is required to use BlueTooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
 1. Obtain the hub's BlueTooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
-1. Edit the file comm/HubClient.py and put your address in the "bt_address =" line.
+1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
+    * For linux, this will be ~/.config/lego-hub-tk/
+1. Copy the file lego_hub.yaml to the newly-created directory.
+1. Edit your copy of lego_hub.yaml to set the correct bluetooth address.
 
 
 ## Features
