@@ -1,10 +1,11 @@
-from comm.BluetoothConnection import BluetoothConnection
-from comm.ConnectionMonitor import ConnectionMonitor
-import bluetooth
 import logging
 import time
+
+import bluetooth
 from events import Events
 
+from comm.BluetoothConnection import BluetoothConnection
+from comm.ConnectionMonitor import ConnectionMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class BluetoothConnectionMonitor(ConnectionMonitor):
     and, when changed, event ports_changed is raised.
     """
     def __init__(self, target_address, port):
-        super().__init__("Bluetooth", self._scan_loop)
+        super().__init__("Bluetooth", self._thread_work)
         
         self.is_online = False
         """Boolean value indicating whether target device is online."""
@@ -46,7 +47,10 @@ class BluetoothConnectionMonitor(ConnectionMonitor):
         else:
             self.notify_change(None)
 
-    def _scan_loop(self):
+    def _thread_work(self):
+        if self.target_address is None:
+            logger.warn('Not scanning: no BlueTooth address configured')
+            return
         lookup_prev = None
         while self.is_scan_active:
             try:
