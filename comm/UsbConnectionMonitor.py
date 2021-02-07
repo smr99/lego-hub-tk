@@ -32,7 +32,7 @@ class UsbConnectionMonitor(ConnectionMonitor):
     and, when changed, event ports_changed is raised.
     """
     def __init__(self):
-        super(UsbConnectionMonitor, self).__init__("USB", self._scan_loop)
+        super(UsbConnectionMonitor, self).__init__("USB", self._thread_work)
         self._devname = None
 
     def is_online(self):
@@ -62,7 +62,7 @@ class UsbConnectionMonitor(ConnectionMonitor):
         self._devname = None
         self.notify_change(None)        
 
-    def _scan_loop(self):
+    def _thread_work(self):
         """Monitor devices added/removed on the USB bus."""
 
         self._initial_scan()
