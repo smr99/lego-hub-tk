@@ -1,0 +1,6 @@
+events 
+pybluez 
+pyqt5 
+pyserial 
+pyudev 
+tqdm  
