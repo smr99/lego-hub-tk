@@ -6,7 +6,7 @@ This document serves as an overview of the toolkit API, describing the key class
 
 The architecture has two layers:
 1. Client - provides application-level Remote Procedure Calls and asynchronous Events
-2. Connection - provies connectivity via USB and BlueTooth
+2. Connection - provies connectivity via USB and Bluetooth
 
 Events are propagated using https://events.readthedocs.io/en/latest/.
 
@@ -30,7 +30,7 @@ This class is the main application-level interface to the hub.  After constructi
 client = HubClient()
 client.start()
 ````
-At this point, the client will begin monitoring USB and/or BlueTooth for the hub.  Once detected, it will connect and begin monitoring the hub state.  
+At this point, the client will begin monitoring USB and/or Bluetooth for the hub.  Once detected, it will connect and begin monitoring the hub state.  
 
 The hubclient will operate in one of the following states:
 * DISCONNECTED: Initial state; no connection to hub
@@ -64,12 +64,12 @@ This layer provides the mechanism that HubClient uses to communicate with the hu
 
 ### ConnectionMonitor
 
-The connection monitor is responsible for monitoring a type of connection -- either USB or BlueTooth -- for the hub.  When the hub is discovered, the connection monitor raises an event.  
+The connection monitor is responsible for monitoring a type of connection -- either USB or Bluetooth -- for the hub.  When the hub is discovered, the connection monitor raises an event.  
 
 There are three concrete implementations of the ConnectionMonitor that support hub connect/disconnect and power cycling:
 * UsbConnectionMonitor - monitors USB bus
-* BluetoothConnectionMonitor - monitors BlueTooth
-* MultiplexedConnectionMonitor - monitors both USB and BlueTooth
+* BluetoothConnectionMonitor - monitors Bluetooth
+* MultiplexedConnectionMonitor - monitors both USB and Bluetooth
 
 Additionally, for the case that you do not desire the monitoring capability (or the code does not work on your platform), the DirectConnectionMonitor can be used to provide a ConnectionMonitor wrapper around a simple connection, e.g. a serial port.
 

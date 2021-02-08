@@ -3,13 +3,13 @@
 # LEGO Hub Toolkit
 > Pythonic connector for the LEGO Mindstorms/Spike Prime robot hub
 
-The LEGO Mindstorms Robot Inventor kit (51515) is powered by a hub that contains a programmable micropython-based microprocessor.  The LEGO Hub Toolkit provides a python communications library that enables a PC to connect to the Hub using USB and/or BlueTooth.  On top of this communications library are some tools that let you monitor the reobot's sensors while it runs as well as to download, start, and stop programs on the hub. 
+The LEGO Mindstorms Robot Inventor kit (51515) is powered by a hub that contains a programmable micropython-based microprocessor.  The LEGO Hub Toolkit provides a python communications library that enables a PC to connect to the Hub using USB and/or Bluetooth.  On top of this communications library are some tools that let you monitor the reobot's sensors while it runs as well as to download, start, and stop programs on the hub. 
 
 The toolkit fulfils a couple of use cases not provided by LEGO's tools.
 1. Writing code for the robot using a linux PC.
 1. Writing a custom application to monitor the robot state as it moves about the world.
 
-The communications library is designed to maintain a connection with the hub, using either USB or BlueTooth with automatic switchover from USB to BlueTooth and vice-versa.  On top of the communications is a client layer that provides classes to encode and decode the hub messages and to maintain the hub state on the PC side.  The hub state includes the onboard gyroscope sensor values as well as the motors and sensors currently plugged into the hub's ports.  On top of the client layer are a couple of example applications to demonstrate monitoring and control.
+The communications library is designed to maintain a connection with the hub, using either USB or Bluetooth with automatic switchover from USB to Bluetooth and vice-versa.  On top of the communications is a client layer that provides classes to encode and decode the hub messages and to maintain the hub state on the PC side.  The hub state includes the onboard gyroscope sensor values as well as the motors and sensors currently plugged into the hub's ports.  On top of the client layer are a couple of example applications to demonstrate monitoring and control.
 
 The LEGO Spike Prime kit apparently uses the same hub -- this toolkit was inspired by and directly uses code for Spike Prime (see Acknowledgements, below).  As such, I expect much of the code to be usable with Spike Prime, though this has not been tested.
 
@@ -47,13 +47,13 @@ Slot Decoded Name                               Size Last Modified        Projec
 
 ## Initial Configuration
 
-Additional configuration is required to use BlueTooth:
+Additional configuration is required to use Bluetooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
-1. Obtain the hub's BlueTooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
+1. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
 1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
     * For linux, this will be ~/.config/lego-hub-tk/
 1. Copy the file lego_hub.yaml to the newly-created directory.
-1. Edit your copy of lego_hub.yaml to set the correct bluetooth address.
+1. Edit your copy of lego_hub.yaml to set the correct Bluetooth address.
 
 
 ## Features
