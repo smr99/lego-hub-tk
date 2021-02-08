@@ -22,6 +22,7 @@ class HubMonitor(object):
     def __init__(self, hub_client) -> None:
         self._client = hub_client
         self._status = HubStatus()
+        self._executing_program_id = None
 
         hub_client.events.telemetry_update += self._on_telemetry_update
 
@@ -37,6 +38,9 @@ class HubMonitor(object):
 
     @property
     def connection_state(self): return self._client.state
+
+    @property
+    def executing_program_id(self): return self._executing_program_id
 
     def _on_telemetry_update(self, timestamp, message):
         if 'm' in message:
@@ -60,6 +64,10 @@ class HubMonitor(object):
             elif msgtype == 12:
                 (program_id, is_running) = message['p']
                 logger.info('Program ID %s changed run state to %s', program_id, is_running)
+                if is_running:
+                    self._executing_program_id = program_id
+                else:
+                    self._executing_program_id = None
                 return
             elif msgtype == 'userProgram.print':
                 output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING)

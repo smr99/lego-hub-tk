@@ -68,6 +68,46 @@ class ConsoleWidget(QTextEdit):
 
     def append_line(self, text): self.append(text + '\n')
 
+class ProgramWidget(QWidget):
+    def __init__(self, hub_client, hub_monitor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._client = hub_client
+        self._monitor = hub_monitor
+        self._executing_program_label = QLabel()
+        self._slot_spinbox = QSpinBox()
+        self._run_button = QPushButton('Run')
+        self._run_button.clicked.connect(self.run_program)
+        self._stop_button = QPushButton('Stop')
+        self._stop_button.clicked.connect(self.stop_program)
+
+        runstop_widget = QWidget()
+        layout = QHBoxLayout(runstop_widget)
+        layout.addWidget(QLabel('Slot:'))
+        layout.addWidget(self._slot_spinbox)
+        layout.addWidget(self._run_button)
+        layout.addWidget(self._stop_button)
+
+        box = QGroupBox('Program Execution')
+        layout = QFormLayout(box)
+        layout.addRow('Executing Program ID:', self._executing_program_label)
+        layout.addRow(runstop_widget)
+
+        layout = QVBoxLayout()
+        layout.addWidget(box)
+        self.setLayout(layout)
+
+    def refresh(self):
+        self._executing_program_label.setText(self._monitor.executing_program_id)
+
+    def run_program(self):
+        slot = self._slot_spinbox.value()
+        r = self._client.program_execute(slot)
+        logger.debug('Program execute returns: %s', r)
+
+    def stop_program(self):
+        r = self._client.program_terminate()
+        logger.debug('Program terminate returns: %s', r)
 
 
 class MainWindow(QMainWindow):
@@ -81,15 +121,13 @@ class MainWindow(QMainWindow):
 
         self.position_widget = PositionStatusWidget(status)
         self.motion_widget = MotionSensorWidget(status)
+        self.program_widget = ProgramWidget(hub_client, hub_monitor)
 
         self.port_widget = DevicePortWidget(status)
         self.console = ConsoleWidget()
 
-
         self.list_button = QPushButton('List')
         self.list_button.clicked.connect(self.list_programs)
-        self.run_button = QPushButton('Run')
-        self.run_button.clicked.connect(self.run_program)
 
         # Top row (status)
         top_box = QWidget()
@@ -102,12 +140,12 @@ class MainWindow(QMainWindow):
         buttons = QWidget()
         layout = QHBoxLayout(buttons)
         layout.addWidget(self.list_button)
-        layout.addWidget(self.run_button)
 
         mw = QWidget()
         layout = QVBoxLayout(mw)
         layout.addWidget(top_box)
         layout.addWidget(buttons)
+        layout.addWidget(self.program_widget)
         layout.addWidget(self.port_widget)
         layout.addWidget(self.console)
         self.setCentralWidget(mw)
@@ -126,6 +164,7 @@ class MainWindow(QMainWindow):
         self.position_widget.refresh()
         self.motion_widget.refresh()
         self.port_widget.refresh()
+        self.program_widget.refresh()
 
     def list_programs(self):
         storage_status = self._client.get_storage_status()
