@@ -87,6 +87,9 @@ python3 hubstatus.py
 
 A window should open displaying the hub status details of the connection type, on-board sensors (yaw, pitch, roll), and the status of the six ports (A-F).  The Hub Gesture value indicates when the hub is tapped, double-tapped, etc.
 
+### Python scripting
+
+See the [API Design documentation](design.md).
 
 ## Contributing
 
@@ -115,7 +118,7 @@ This project owes a particular debt of gratitude to several other open source pr
 
 Provided the inspiration -- and the core pyudev code -- for USB autodetect.  Additionally, rshell was hugely helpful in exploring the on-board python Read-Evaluate-Print-Loop (REPL) and the hub's file structure.
 
-#### [spike tools](https://github.com/nutki/spike-tools)
+#### [Spike Tools](https://github.com/nutki/spike-tools)
 
 Provided the core code for decoding the JSON message structure.  The script run_command.py in this toolkit started as a copy of spikejsonrpc from spike tools, with the serial handling code replaced by the comm library.
 
