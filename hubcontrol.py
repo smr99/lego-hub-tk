@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.console)
         self.setCentralWidget(mw)
 
-        hub_monitor.events.console_print += self.console.append_line
+        hub_monitor.events.console_print += self.console.append
 
         # Timer refresh trick from https://github.com/Taar2/pyqt5-modelview-tutorial/blob/master/modelview_3.py
         # this trick is used to work around the issue of updating UI from background threads -- i.e. events

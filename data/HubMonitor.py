@@ -66,8 +66,8 @@ class HubMonitor(object):
                 logger.info('Program ID %s changed run state to %s', program_id, is_running)
                 return
             elif msgtype == 'userProgram.print':
-                output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING).strip()
-                logger.info('Program output: %s', output)
+                output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING)
+                logger.info('Program output: %s', output.strip())
                 self.events.console_print(output)
                 return
 
