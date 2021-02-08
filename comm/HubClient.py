@@ -166,3 +166,5 @@ class HubClient(object):
     def program_execute(self, slot):
         return self.send_message('program_execute', {'slotid': slot}) 
 
+    def program_terminate(self):
+        return self.send_message('program_terminate')
