@@ -22,12 +22,11 @@ class HubMonitor(object):
     def __init__(self, hub_client) -> None:
         self._client = hub_client
         self._status = HubStatus()
-        self._connection_state = None
 
-        hub_client.events.connection_state_changed += self._on_connection_state_changed
         hub_client.events.telemetry_update += self._on_telemetry_update
 
         self.events = Events(('console_print'))
+        """Event triggered by user program on hub calling print()"""
 
 
     @property
@@ -37,10 +36,7 @@ class HubMonitor(object):
     def connection_device(self): return self._client.connection.name
 
     @property
-    def connection_state(self): return self._connection_state
-
-    def _on_connection_state_changed(self, oldstate, newstate):
-        self._connection_state = newstate
+    def connection_state(self): return self._client.state
 
     def _on_telemetry_update(self, timestamp, message):
         if 'm' in message:
