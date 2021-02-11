@@ -74,5 +74,12 @@ class HubMonitor(object):
                 logger.info('Program output: %s', output.strip())
                 self.events.console_print(output)
                 return
+            elif msgtype == 'user_program_error':
+                params = message['p']
+                logger.info('Program error output: %s', params[0:3])
+                err =  base64.b64decode(params[3]).decode(LINE_ENCODING)
+                logger.info('Program error message: %s', err.strip())
+                self.events.console_print("***ERROR\n" + err)
+                return
 
         logger.warn('unhandled message: %s', message)
