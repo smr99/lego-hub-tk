@@ -168,7 +168,8 @@ class MainWindow(QMainWindow):
 
     def list_programs(self):
         storage_status = self._client.get_storage_status()
-        list_programs(storage_status)
+        if storage_status is not None:
+            list_programs(storage_status)
 
     def run_program(self):
         slot = 4

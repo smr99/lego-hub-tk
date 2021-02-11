@@ -105,6 +105,9 @@ class HubClient(object):
     def send_message(self, name, params = {}):
         """Send a message and return the response.
         """
+        if self.state != ConnectionState.TELEMETRY:
+            logger.warn('ignoring send request in state %s', self.state)
+            return
 
         id = self._get_message_id()
         msg = {'m':name, 'p': params, 'i': id}
