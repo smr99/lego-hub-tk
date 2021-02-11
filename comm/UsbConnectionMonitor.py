@@ -13,7 +13,12 @@ logger = logging.getLogger(__name__)
 
 def is_lego_id(vid, pid):
     """Determine if a LEGO Hub by checking the vendor id and product id."""
-    return vid == 1684 and pid == 16
+    # Values obtained from PyBricks project: https://github.com/pybricks/technical-info/blob/master/assigned-numbers.md
+    # 0x0694	0x0008	LEGO Technic Large Hub in DFU mode (SPIKE Prime)
+    # 0x0694	0x0009	LEGO Technic Large Hub (SPIKE Prime)
+    # 0x0694	0x0010	LEGO Technic Large Hub (MINDSTORMS Inventor)
+    # 0x0694	0x0011	LEGO Technic Large Hub in DFU mode (MINDSTORMS Inventor)
+    return vid == 0x0694 and (pid == 0x0008 or pid == 0x0009 or pid == 0x0010 or pid == 0x0011)
 
 def connected_comports():
     return [p for p in serial.tools.list_ports.comports() if is_lego_id(p.vid, p.pid)]
