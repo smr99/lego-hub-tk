@@ -110,6 +110,7 @@ branch. Pull requests are warmly welcome.
   - Spike Tools: https://github.com/nutki/spike-tools
   - Spike Prime info and micropython decompiler: https://github.com/gpdaniels/spike-prime
   - Spike Prime Extension for VS Code https://github.com/sanjayseshan/spikeprime-vscode
+  - Pybricks https://pybricks.com/
 - Related MicroPython projects:
   - rshell (Remote MicroPython Shell): https://github.com/dhylands/rshell
 
