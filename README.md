@@ -58,9 +58,9 @@ Additional configuration is required to use Bluetooth:
 
 ## Features
 
-### Runing code on the hub
+### Runing code on the hub - command line
 
-The script run_command can
+When plugged in via USB, the command-line script run_command can
 * list programs stored on the hub
 * upload a program to the hub
 * start a program on the hub
@@ -74,7 +74,10 @@ python3 run_program.py start 4
 python3 run_program.py stop
 ```
 
-Coming soon: script hubcontrol can be used to run a program on the hub and display the console output and status while it runs.
+### Runing code on the hub - GUI
+
+The GUI program hubcontrol can be used to run a program on the hub and display the console output and status while it runs.  Unlike `run_command`, this
+program connects via Bluetooth as well as USB, so it can monitor and control the hub as it runs untethered.
 
 ### Monitoring running hub
 
