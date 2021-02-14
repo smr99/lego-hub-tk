@@ -1,4 +1,3 @@
-
 from data.MotionSensorStatus import MotionSensorStatus
 
 
@@ -35,7 +34,7 @@ class HubStatus(object):
         
         Array of 3 values:
         * Entry 0 is a float (typically 8.3 ish)
-        * Entry 1 is int (battery %?)
+        * Entry 1 is int (battery %)
         * Entry 2 is bool (USB connected)
         """
 
@@ -69,6 +68,12 @@ class HubStatus(object):
     def orientation(self):
         return self.status0[8]
 
+    @property
     def is_usb_connected(self):
         return self.status2[2]
+
+    @property
+    def battery_level(self):
+        """Battery charge percentage."""
+        return self.status2[1]
  

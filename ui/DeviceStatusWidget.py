@@ -31,7 +31,7 @@ class DeviceStatusWidget(QWidget):
         self.status0_9 = QLabel()
         self.status0_10 = QLabel()
         self.status2_0 = QLabel()
-        self.status2_1 = QLabel()
+        self.battery_level = QLabel()
         self.usb_label = QLabel()
         self.hub_orientation_label = QLabel()
         self.hub_gesture_label = QLabel()
@@ -54,8 +54,8 @@ class DeviceStatusWidget(QWidget):
         layout.addWidget(self.status0_10, 1, 1)
         layout.addWidget(QLabel('Status2[0]'), 2, 0)
         layout.addWidget(self.status2_0, 2, 1)
-        layout.addWidget(QLabel('Status2[1]'), 3, 0)
-        layout.addWidget(self.status2_1, 3, 1)
+        layout.addWidget(QLabel('Battery%'), 3, 0)
+        layout.addWidget(self.battery_level, 3, 1)
         layout.addWidget(QLabel('USB Connected'), 4, 0)
         layout.addWidget(self.usb_label, 4, 1)
         group2.setLayout(layout)
@@ -82,8 +82,8 @@ class DeviceStatusWidget(QWidget):
         self.status0_9.setText(str(status.status0[9]))
         self.status0_10.setText(str(status.status0[10]))
         self.status2_0.setText(str(status.status2[0]))
-        self.status2_1.setText(str(status.status2[1]))
-        self.usb_label.setText(str(status.is_usb_connected()))
+        self.battery_level.setText(str(status.battery_level))
+        self.usb_label.setText(str(status.is_usb_connected))
 
         gesture = ''
         if now - status.motion_sensor.gesture.timestamp < event_display_time:
