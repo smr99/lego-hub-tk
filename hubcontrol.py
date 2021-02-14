@@ -16,7 +16,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget
 
-from comm.HubClient import HubClient
+from comm.HubClient import ConnectionState, HubClient
 from data.HubMonitor import HubMonitor
 from data.HubStatus import HubStatus
 from ui.DeviceStatusWidget import DeviceStatusWidget
@@ -69,7 +69,7 @@ class ConsoleWidget(QTextEdit):
     def append_line(self, text): self.append(text + '\n')
 
 class ProgramWidget(QWidget):
-    def __init__(self, hub_client, hub_monitor, *args, **kwargs):
+    def __init__(self, hub_client : HubClient, hub_monitor : HubMonitor, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._client = hub_client
@@ -98,7 +98,10 @@ class ProgramWidget(QWidget):
         self.setLayout(layout)
 
     def refresh(self):
+        is_connected = self._client.state == ConnectionState.TELEMETRY
         self._executing_program_label.setText(self._monitor.executing_program_id)
+        self._run_button.setEnabled(is_connected)
+        self._stop_button.setEnabled(is_connected)
 
     def run_program(self):
         slot = self._slot_spinbox.value()
@@ -161,6 +164,9 @@ class MainWindow(QMainWindow):
         timer.start()
 
     def refresh(self):
+        is_connected = self._client.state == ConnectionState.TELEMETRY
+        is_connected_usb = is_connected and self._hub_monitor.status.is_usb_connected
+        self.list_button.setEnabled(is_connected_usb)
         self.position_widget.refresh()
         self.motion_widget.refresh()
         self.port_widget.refresh()

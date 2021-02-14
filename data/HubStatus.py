@@ -29,7 +29,7 @@ class HubStatus(object):
         * Entry 10 is an int        
         """
 
-        self.status2 = [''] * 3
+        self.status2 = [0.0, 0, False]
         """Values obtained from the m=2 message.
         
         Array of 3 values:
