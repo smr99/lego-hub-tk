@@ -1,3 +1,4 @@
+from comm.Connection import Connection
 import appdirs
 import cfg_load
 import base64
@@ -72,7 +73,7 @@ class HubClient(object):
         """
         self._connection_monitor.start()
 
-    def _connection_changed(self, conn):
+    def _connection_changed(self, conn : Connection):
         try:
             self._connection.events.line_received -= self._on_line_received
             self._connection.close()
@@ -88,6 +89,7 @@ class HubClient(object):
                 self._set_connection_state(ConnectionState.DISCONNECTED)
         except Exception as ex:
             logger.exception('connection change failed: %s', ex)
+            self._connection.events.line_received -= self._on_line_received
             self._connection = NullConnection()
             self._set_connection_state(ConnectionState.DISCONNECTED)
 

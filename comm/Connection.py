@@ -23,7 +23,8 @@ class Connection(ABC):
 
     @abstractmethod
     def open(self):
-        """Open the connection for use."""
+        """Open the connection for use.
+        Failure will be signaled by an exception."""
         pass
 
     @abstractmethod
