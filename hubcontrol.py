@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 
 import base64
+from data.ProgramHubLogger import ProgramHubLogger
 from datetime import datetime
 import logging
 import os
@@ -185,6 +186,7 @@ class MainWindow(QMainWindow):
 logger.info("LEGO status app starting up")
 hc = HubClient()
 monitor = HubMonitor(hc)
+monitor.logger = ProgramHubLogger('logs/program')
 
 app = QApplication(sys.argv)
 window = MainWindow(hc, monitor)

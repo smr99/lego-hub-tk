@@ -60,12 +60,15 @@ class HubStatus(object):
         return self.port_raw(port)[1]
 
     def accelerometer(self):
+        """(ax,ay,az)"""
         return self.status0[6]
 
     def gyroscope(self):
+        """(x,y,z)"""
         return self.status0[7]
 
     def orientation(self):
+        """(yaw, pitch, roll)"""
         return self.status0[8]
 
     @property

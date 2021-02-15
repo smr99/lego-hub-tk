@@ -1,17 +1,9 @@
 import base64
-import datetime
-import json
 import logging
-from enum import Enum
-from queue import Queue
 
-from comm.HubClient import ConnectionState
-from comm.MultiplexedConnectionMonitor import MultiplexedConnectionMonitor
-from comm.NullConnection import NullConnection
 from events import Events
-from utils.LockedCounter import LockedCounter
-
 from data.HubStatus import HubStatus
+from data.NullHubLogger import NullHubLogger
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +21,7 @@ class HubMonitor(object):
         self.events = Events(('console_print'))
         """Event triggered by user program on hub calling print()"""
 
+        self.logger = NullHubLogger()
 
     @property
     def status(self): return self._status
@@ -43,24 +36,23 @@ class HubMonitor(object):
     def executing_program_id(self): return self._executing_program_id
 
     def _on_telemetry_update(self, timestamp, message):
+        message_recognized = True
         if 'm' in message:
             msgtype = message['m']
             if msgtype == 0:
                 self._status.set_status0(message['p'])
-                return
+                self.logger.telemetry_update(timestamp, message, self.status)
             elif msgtype == 2:
                 self._status.set_status2(message['p'])
-                return
+                self.logger.telemetry_update(timestamp, message, self.status)
             elif msgtype == 3:
                 (button_id, millis) = message['p']
                 if millis == 0:
                     logger.info('Button %s down', button_id)
                 else:
                     logger.info('Button %s up after %d milliseconds', button_id, millis)
-                return
             elif msgtype == 4:
                 self._status.motion_sensor.record_event(timestamp, message['p'])
-                return
             elif msgtype == 12:
                 (program_id, is_running) = message['p']
                 logger.info('Program ID %s changed run state to %s', program_id, is_running)
@@ -68,18 +60,21 @@ class HubMonitor(object):
                     self._executing_program_id = program_id
                 else:
                     self._executing_program_id = None
-                return
+                self.logger.program_runstatus_update(timestamp, program_id, is_running)
             elif msgtype == 'userProgram.print':
                 output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING)
                 logger.info('Program output: %s', output.strip())
                 self.events.console_print(output)
-                return
             elif msgtype == 'user_program_error':
                 params = message['p']
                 logger.info('Program error output: %s', params[0:3])
                 err =  base64.b64decode(params[3]).decode(LINE_ENCODING)
                 logger.info('Program error message: %s', err.strip())
                 self.events.console_print("***ERROR\n" + err)
-                return
+            else:
+                message_recognized = False
+        else:
+            message_recognized = False
 
-        logger.warn('unhandled message: %s', message)
+        if not message_recognized:
+            logger.warn('unhandled message: %s', message)

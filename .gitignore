@@ -1,5 +1,6 @@
 # Project specific ignores
 logs
+*.csv
 
 ### The remainder of this file is GitHub's Python template
 

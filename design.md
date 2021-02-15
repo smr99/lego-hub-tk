@@ -58,6 +58,14 @@ client.start()
 # Hub state available in monitor.state
 ````
 
+### HubLogger
+
+This class provides infastructure to log telemetry data to a file.  Two example classes are provided:
+* BasicHubLogger logs a line of output (configurable) a single CSV file on each telemetry update
+* ProgramHubLogger log will separate the output to one file per program
+
+The user can customize the data to log in either of these classes, or can write a subclass to customize the logging; e.g. if an alternate format is desired.
+
 ## Connection Layer
 
 This layer provides the mechanism that HubClient uses to communicate with the hub.
