@@ -40,7 +40,7 @@ class DeviceStatusWidget(QWidget):
         layout = QGridLayout()
         layout.addWidget(QLabel('Tilt Angle'), 0, 0)
         layout.addWidget(self.orientation_label, 0, 1)
-        layout.addWidget(QLabel('Gyroscope'), 1, 0)
+        layout.addWidget(QLabel('Gyro Rate'), 1, 0)
         layout.addWidget(self.gyro_label, 1, 1)
         layout.addWidget(QLabel('Accelerometer'), 2, 0)
         layout.addWidget(self.accel_label, 2, 1)

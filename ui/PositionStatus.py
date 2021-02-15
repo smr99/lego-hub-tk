@@ -30,7 +30,7 @@ class PositionStatusWidget(QWidget):
         pos_group = QGroupBox('Position')
         layout = QFormLayout(pos_group)
         layout.addRow('Tilt Angle:', self.orientation_label)
-        layout.addRow('Gyroscope:', self.gyro_label)
+        layout.addRow('Gyro Rate:', self.gyro_label)
         layout.addRow('Accelerometer:', self.accel_label)
 
         layout = QVBoxLayout()

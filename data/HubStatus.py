@@ -22,8 +22,8 @@ class HubStatus(object):
         * Entries 0-5 are each an array of length 2, corresponding to ports A-F
           - first entry is device ID
           - second entry is device status (varies by device)
-        * Entry 6 is accelerometer; array of 3 values (x,y,z)
-        * Entry 7 is gyroscope; array of 3 values (x,y,z)
+        * Entry 6 is accelerometer; array of 3 acceleration values (x,y,z)
+        * Entry 7 is gyroscope; array of 3 rate values (x,y,z)
         * Entry 8 is orientation; array of 3 values (yaw,pitch,roll)
         * Entry 9 is a string
         * Entry 10 is an int        
@@ -60,15 +60,15 @@ class HubStatus(object):
         return self.port_raw(port)[1]
 
     def accelerometer(self):
-        """(ax,ay,az)"""
+        """Acceleration (ax,ay,az)"""
         return self.status0[6]
 
     def gyroscope(self):
-        """(x,y,z)"""
+        """Gyroscope rate (rx,ry,rz)"""
         return self.status0[7]
 
     def orientation(self):
-        """(yaw, pitch, roll)"""
+        """Orientation angles (yaw, pitch, roll)"""
         return self.status0[8]
 
     @property
