@@ -27,6 +27,11 @@ class RPC:
     #cm = DirectConnectionMonitor(SerialConnection("/dev/ttyACM0"))
     self._client = HubClient(cm)
     self._client.start()
+    
+  def _gen_random_id(self, length=4):
+    import string, random
+    letters = string.ascii_letters + string.digits + '_'
+    return ''.join(random.choice(letters) for _ in range(length))  
 
   def send_message(self, name, params = {}):
     while rpc._client.state is not ConnectionState.TELEMETRY:
@@ -45,7 +50,8 @@ class RPC:
     return self.send_message('get_storage_status')
 
   def start_write_program(self, name, size, slot, created, modified):
-    meta = {'created': created, 'modified': modified, 'name': name, 'type': 'python', 'project_id': '50uN1ZaRpHj2'}
+    project_id = self._gen_random_id(12)
+    meta = {'created': created, 'modified': modified, 'name': name, 'type': 'python', 'project_id': project_id}
     return self.send_message('start_write_program', {'slotid':slot, 'size': size, 'meta': meta})
 
   def write_package(self, data, transferid):
