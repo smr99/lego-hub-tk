@@ -51,7 +51,7 @@ class RPC:
 
   def start_write_program(self, name, size, slot, created, modified):
     project_id = self._gen_random_id(12)
-    meta = {'created': created, 'modified': modified, 'name': name, 'type': 'python', 'project_id': project_id}
+    meta = {'created': created, 'modified': modified, 'name': str(base64.b64encode(name.encode()), 'utf-8'), 'type': 'python', 'project_id': project_id}
     return self.send_message('start_write_program', {'slotid':slot, 'size': size, 'meta': meta})
 
   def write_package(self, data, transferid):
