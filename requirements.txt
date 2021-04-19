@@ -1,8 +1,9 @@
 appdirs
 cfg_load
 events 
-pybluez 
+pybluez2
+pyobjc-framework-libdispatch; sys_platform == 'darwin' 
 pyqt5 
 pyserial 
-pyudev 
+pyudev; sys_platform == "linux"
 tqdm  
