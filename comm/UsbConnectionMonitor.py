@@ -2,7 +2,6 @@ from comm.SerialConnection import SerialConnection
 import logging
 import select
 
-import pyudev
 import serial
 from serial.tools import list_ports
 
@@ -71,7 +70,13 @@ class UsbConnectionMonitor(ConnectionMonitor):
         """Monitor devices added/removed on the USB bus."""
 
         self._initial_scan()
-
+        
+        import platform
+        if platform.system() != 'Linux':
+            return
+        
+        # For now, only continue if we are on Linux system
+        import pyudev
         context = pyudev.Context()
         monitor = pyudev.Monitor.from_netlink(context)
         monitor.start()

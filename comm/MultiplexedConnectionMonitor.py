@@ -3,12 +3,7 @@ from comm.BluetoothConnectionMonitor import BluetoothConnectionMonitor
 from comm.UsbConnectionMonitor import UsbConnectionMonitor
 from comm.SerialConnection import SerialConnection
 import logging
-import select
-
-import pyudev
-import serial
 from serial.tools import list_ports
-
 
 logger = logging.getLogger(__name__)
 
