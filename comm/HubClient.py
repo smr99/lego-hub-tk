@@ -101,8 +101,11 @@ class HubClient(object):
         """
         self._connection.write(line)
 
-    def _get_message_id(self):
-        return self._id_counter.next_value()
+    def _gen_message_id(self):
+        import string, random
+        length = 4
+        letters = string.ascii_letters + string.digits + '_'
+        return ''.join(random.choice(letters) for _ in range(length))    
 
     def send_message(self, name, params = {}):
         """Send a message and return the response.
@@ -111,7 +114,7 @@ class HubClient(object):
             logger.warn('ignoring send request in state %s', self.state)
             return
 
-        id = self._get_message_id()
+        id = self._gen_message_id()
         msg = {'m':name, 'p': params, 'i': id}
         msg_string = json.dumps(msg)
         self.send_line(msg_string)
