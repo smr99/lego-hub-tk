@@ -48,7 +48,7 @@ class HubClient(object):
 
     def __init__(self, cm = MultiplexedConnectionMonitor(config['bluetooth']['address'], config['bluetooth']['port'])):
         self._response_queue = Queue()
-        self.events = Events(('connection_state_changed', 'telemetry_update'))
+        self.events = Events(('connection_state_changed', 'telemetry_update', 'console_print'))
         self._id_counter = LockedCounter(1000)
 
         self.state = ConnectionState.DISCONNECTED
@@ -167,6 +167,7 @@ class HubClient(object):
                 logger.warn('failed to decode JSON message: %s', line) 
         else:
             logger.info('received non-JSON: %s', line)
+            self.events.console_print(line + '\n')
 
     def process_message(self, message):
         timestamp = datetime.datetime.now()
