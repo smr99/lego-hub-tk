@@ -22,6 +22,8 @@ class HubMonitor(object):
         self.events = Events(('console_print'))
         """Event triggered by user program on hub calling print()"""
 
+        hub_client.events.console_print += self.events.console_print  # propagate event
+
         self.logger = NullHubLogger()
 
     @property
