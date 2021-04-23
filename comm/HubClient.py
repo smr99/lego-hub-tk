@@ -130,7 +130,7 @@ class HubClient(object):
                 raise ConnectionError(error)
             else:
                 logger.warn('ignored response: ', resp)
-
+                
     def send_response(self, id: str, response = None):
         """Send a response.
         """
@@ -141,7 +141,6 @@ class HubClient(object):
         msg = {'i': id, 'r': response}
         msg_string = json.dumps(msg)
         self.send_line(msg_string)
-
 
     def _on_line_received(self, line):
         state = self.state

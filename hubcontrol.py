@@ -100,7 +100,7 @@ class ProgramWidget(QWidget):
 
     def refresh(self):
         is_connected = self._client.state == ConnectionState.TELEMETRY
-        self._executing_program_label.setText(self._monitor.executing_program_id)
+        self._executing_program_label.setText(self._monitor.execution_status[0])
         self._run_button.setEnabled(is_connected)
         self._stop_button.setEnabled(is_connected)
 

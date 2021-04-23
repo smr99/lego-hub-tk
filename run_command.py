@@ -15,6 +15,7 @@ import json
 import logging
 from datetime import datetime
 from comm.HubClient import ConnectionState, HubClient
+from data.HubMonitor import HubMonitor
 from utils.setup import setup_logging
 
 logger = logging.getLogger("App")
@@ -26,7 +27,12 @@ class RPC:
     # below is an alternative if the USB scanning does not work
     #cm = DirectConnectionMonitor(SerialConnection("/dev/ttyACM0"))
     self._client = HubClient(cm)
+    self._hm = HubMonitor(self._client)
+    self._hm.events.console_print += self._console_print
     self._client.start()
+    
+  def _console_print(self, msg):
+    print(msg, end='')
     
   def _gen_random_id(self, length=4):
     import string, random
@@ -39,14 +45,46 @@ class RPC:
       time.sleep(2)
     return self._client.send_message(name, params)
 
-# Program Methods
-  def program_execute(self, n):
-    return self.send_message('program_execute', {'slotid': n})
+  # Program Methods
+  def program_execute(self, n: int, wait: bool = True, terminate_on_ctrl_c: bool = True):
+    info = rpc.get_storage_information()
+    if info is None:
+      logger.error(f'Cannot get storage information from Hub')
+      raise SystemExit
+    
+    slots = info['slots']
+    
+    if str(n) not in slots:
+      logger.error(f'Cannot find program in slot {n}')
+      return
+    
+    project = slots[str(n)]
+    project_id = project['project_id']
+
+    res = self.send_message('program_execute', {'slotid': n})
+    
+    if not wait:
+      return res
+    
+    try:  
+      import time
+      while self._hm.execution_status != (project_id, False):
+        time.sleep(0.5)
+    except KeyboardInterrupt:
+      if terminate_on_ctrl_c and self._hm.execution_status[1]:  # take care of 'None' and 'False'
+        logger.warning('Ctrl-C received, terminating program...')
+        self.send_message('program_terminate', {})
+      else:
+        logger.warning('Ctrl-C received.')
+    finally:
+      pass
+
+    return res
 
   def program_terminate(self):
     return self.send_message('program_terminate')
 
-  def get_storage_information(self):
+  def get_storage_information(self) -> dict:
     return self.send_message('get_storage_status')
 
   def start_write_program(self, name, size, slot, created, modified):
@@ -131,7 +169,7 @@ if __name__ == "__main__":
           pbar.update(len(b))
           b = f.read(bs)
       if args.start:
-        rpc.program_execute(args.to_slot)
+        rpc.program_execute(args.to_slot, wait=args.wait)
 
   parser = argparse.ArgumentParser(description='Tools for Spike Hub RPC protocol')
   parser.add_argument('--verbose', help='print informational messages to console', action='store_true')
@@ -154,6 +192,7 @@ if __name__ == "__main__":
   cpprogram_parser.add_argument('to_slot', type=int)
   cpprogram_parser.add_argument('name', nargs='?')
   cpprogram_parser.add_argument('--start', '-s', help='Start after upload', action='store_true')
+  cpprogram_parser.add_argument('--wait', '-w', help='Wait for program to finish', action='store_true')
   cpprogram_parser.set_defaults(func=handle_upload)
 
   rmprogram_parser = sub_parsers.add_parser('rm', help='Removes the program at a given slot')
@@ -162,7 +201,8 @@ if __name__ == "__main__":
 
   startprogram_parser = sub_parsers.add_parser('start', help='Starts a program')
   startprogram_parser.add_argument('slot', type=int)
-  startprogram_parser.set_defaults(func=lambda: rpc.program_execute(args.slot))
+  startprogram_parser.add_argument('--wait', '-w', help='Wait for program to finish', action='store_true')
+  startprogram_parser.set_defaults(func=lambda: rpc.program_execute(args.slot, wait=args.wait))
 
   stopprogram_parser = sub_parsers.add_parser('stop', help='Stop program execution')
   stopprogram_parser.set_defaults(func=lambda: rpc.program_terminate())
