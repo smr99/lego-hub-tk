@@ -42,7 +42,7 @@ class RPC:
   def send_message(self, name, params = {}):
     while rpc._client.state is not ConnectionState.TELEMETRY:
       logger.info('waiting for hub to connect')
-      time.sleep(2)
+      time.sleep(0.2)
     return self._client.send_message(name, params)
 
   # Program Methods
@@ -73,7 +73,7 @@ class RPC:
     except KeyboardInterrupt:
       if terminate_on_ctrl_c and self._hm.execution_status[1]:  # take care of 'None' and 'False'
         logger.warning('Ctrl-C received, terminating program...')
-        self.send_message('program_terminate', {})
+        self.program_terminate()
       else:
         logger.warning('Ctrl-C received.')
     finally:
@@ -87,13 +87,48 @@ class RPC:
   def get_storage_information(self) -> dict:
     return self.send_message('get_storage_status')
 
-  def start_write_program(self, name, size, slot, created, modified):
-    project_id = self._gen_random_id(12)
-    meta = {'created': created, 'modified': modified, 'name': str(base64.b64encode(name.encode()), 'utf-8'), 'type': 'python', 'project_id': project_id}
-    return self.send_message('start_write_program', {'slotid':slot, 'size': size, 'meta': meta})
+  def program_write(self, file:str, name: str = None, slot: int = 0) -> bool:
+    
+    def _start_write_program(name, size, slot, created, modified, filename: str = '__init__.py'):
+      project_id = self._gen_random_id(12)
+      meta = {'created': created, 'modified': modified, 'name': str(base64.b64encode(name.encode()), 'utf-8'), 
+              'type': 'python', 'project_id': project_id}
+      return self.send_message('start_write_program', {'slotid':slot, 'size': size, 'meta': meta, 'filename': filename})
 
-  def write_package(self, data, transferid):
-    return self.send_message('write_package', {'data': str(base64.b64encode(data), 'utf-8'), 'transferid': transferid})
+    def _write_package(data, transferid):
+      return self.send_message('write_package', {'data': str(base64.b64encode(data), 'utf-8'), 'transferid': transferid})
+
+    from pathlib import Path
+    filepath = Path(file)
+
+    if not filepath.exists():
+      logger.error(f'File {filepath} does not exists')
+      return False
+
+    is_py = filepath.suffix.lower() == '.py'
+    is_mpy = filepath.suffix.lower() == '.mpy'
+
+    if not is_py and not is_mpy:
+      logger.error(f'File {filepath} is not a valide .py or .mpy file')
+      return False
+    
+    dest_file = '__init__.py' if is_py else '__init__.mpy'
+    
+    with open(args.file, "rb") as f:
+      size = os.path.getsize(args.file)
+      name = name if name else file
+      now = int(time.time() * 1000)
+      start = _start_write_program(name, size, slot, now, now, filename=dest_file)
+      bs = start['blocksize']
+      id = start['transferid']
+      with tqdm(total=size, unit='B', unit_scale=True) as pbar:
+        b = f.read(bs)
+        while b:
+          _write_package(b, id)
+          pbar.update(len(b))
+          b = f.read(bs)
+    return True
+
 
   def move_project(self, from_slot, to_slot):
     return self.send_message('move_project', {'old_slotid': from_slot, 'new_slotid': to_slot})
@@ -155,21 +190,13 @@ if __name__ == "__main__":
     print("Firmware version: %s; Runtime version: %s" % (fw, rt))
   
   def handle_upload():
-    with open(args.file, "rb") as f:
-      size = os.path.getsize(args.file)
-      name = args.name if args.name else args.file
-      now = int(time.time() * 1000)
-      start = rpc.start_write_program(name, size, args.to_slot, now, now)
-      bs = start['blocksize']
-      id = start['transferid']
-      with tqdm(total=size, unit='B', unit_scale=True) as pbar:
-        b = f.read(bs)
-        while b:
-          rpc.write_package(b, id)
-          pbar.update(len(b))
-          b = f.read(bs)
-      if args.start:
-        rpc.program_execute(args.to_slot, wait=args.wait)
+    res = rpc.program_write(args.file, args.name, args.to_slot)
+    if not res:
+      logger.error(f'Fail to write file: {args.file}')
+      return False
+    if args.start:
+      rpc.program_execute(args.to_slot, wait=args.wait)
+    return True
 
   parser = argparse.ArgumentParser(description='Tools for Spike Hub RPC protocol')
   parser.add_argument('--verbose', help='print informational messages to console', action='store_true')
