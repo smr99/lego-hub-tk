@@ -76,6 +76,12 @@ class HubMonitor(object):
                 err =  base64.b64decode(params[3]).decode(LINE_ENCODING)
                 logger.info('Program error message: %s', err.strip())
                 self.events.console_print("***ERROR\n" + err)
+            elif msgtype == 'runtime_error':
+                params = message['p']
+                logger.info('Runtime error output: %s', params[0:3])
+                err =  base64.b64decode(params[3]).decode(LINE_ENCODING)
+                logger.info('Program error message: %s', err.strip())
+                self.events.console_print("***ERROR (Runtime)\n" + err)
             else:
                 message_recognized = False
         else:
@@ -83,3 +89,7 @@ class HubMonitor(object):
 
         if not message_recognized:
             logger.warn('unhandled message: %s', message)
+
+            # TODO handle message types:
+            # {'m': 7, 'p': 'zBAZ4zVlAjuemfPMBTr3'}  # stack started, 'p' is the vm id
+            # {'m': 8, 'p': 'zBAZ4zVlAjuemfPMBTr3'}  # stack ended, 'p' is the vm id
