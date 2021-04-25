@@ -89,13 +89,12 @@ class RPC:
   def get_storage_information(self) -> dict:
     return self.send_message('get_storage_status')
   
-  def program_compile(self, src_file: str, out_file: str = None, opt: int = 0):
+  def program_compile(self, src_file: str, out_file: str = None, opt: int = 0) -> str:
     cmd = f'-municode {src_file}'
+    
     if not out_file:
       out_file = Path(src_file).with_suffix('.mpy')
-    
     cmd += f' -o {out_file}'
-    
     if opt != 0 and 0 < opt <= 3:
       cmd += f' -O{opt}'
     try:
@@ -133,7 +132,9 @@ class RPC:
       if is_mpy:
         logger.warning(f'Skip compiling mpy file: {filepath.name}')
       else:
-        mpy_file = rpc.program_compile(filepath)
+        import tempfile
+        out_file = tempfile.NamedTemporaryFile(suffix='.mpy')
+        mpy_file = rpc.program_compile(filepath, out_file=out_file.name)
         if mpy_file:
           is_mpy = True
           is_py = False
@@ -227,7 +228,7 @@ if __name__ == "__main__":
     if not res:
       logger.error(f'Fail to write file: {args.file}')
       return False
-    if args.start:
+    if args.start or args.wait:  # either -s or/and -w are specified
       rpc.program_execute(args.to_slot, wait=args.wait)
     return True
 
@@ -252,7 +253,7 @@ if __name__ == "__main__":
   cpprogram_parser.add_argument('to_slot', type=int)
   cpprogram_parser.add_argument('name', nargs='?')
   cpprogram_parser.add_argument('--start', '-s', help='Start after upload', action='store_true')
-  cpprogram_parser.add_argument('--wait', '-w', help='Wait for program to finish', action='store_true')
+  cpprogram_parser.add_argument('--wait', '-w', help='Start and wait for program to finish', action='store_true')
   cpprogram_parser.add_argument('--vm', help='Virtualmachine-based python program', action='store_true')
   cpprogram_parser.add_argument('--compile', '-c', help='Compile python program before upload', action='store_true')
   cpprogram_parser.set_defaults(func=handle_upload)
