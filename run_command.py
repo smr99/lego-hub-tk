@@ -87,12 +87,13 @@ class RPC:
   def get_storage_information(self) -> dict:
     return self.send_message('get_storage_status')
 
-  def program_write(self, file:str, name: str = None, slot: int = 0) -> bool:
+  def program_write(self, file:str, name: str = None, slot: int = 0, vm: bool = False) -> bool:
     
     def _start_write_program(name, size, slot, created, modified, filename: str = '__init__.py'):
       project_id = self._gen_random_id(12)
+      type = 'scratch' if vm else 'python'
       meta = {'created': created, 'modified': modified, 'name': str(base64.b64encode(name.encode()), 'utf-8'), 
-              'type': 'python', 'project_id': project_id}
+              'type': type, 'project_id': project_id}
       return self.send_message('start_write_program', {'slotid':slot, 'size': size, 'meta': meta, 'filename': filename})
 
     def _write_package(data, transferid):
@@ -190,7 +191,7 @@ if __name__ == "__main__":
     print("Firmware version: %s; Runtime version: %s" % (fw, rt))
   
   def handle_upload():
-    res = rpc.program_write(args.file, args.name, args.to_slot)
+    res = rpc.program_write(args.file, args.name, args.to_slot, vm=args.vm)
     if not res:
       logger.error(f'Fail to write file: {args.file}')
       return False
@@ -220,6 +221,7 @@ if __name__ == "__main__":
   cpprogram_parser.add_argument('name', nargs='?')
   cpprogram_parser.add_argument('--start', '-s', help='Start after upload', action='store_true')
   cpprogram_parser.add_argument('--wait', '-w', help='Wait for program to finish', action='store_true')
+  cpprogram_parser.add_argument('--vm', help='Virtualmachine-based python program', action='store_true')
   cpprogram_parser.set_defaults(func=handle_upload)
 
   rmprogram_parser = sub_parsers.add_parser('rm', help='Removes the program at a given slot')
