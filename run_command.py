@@ -17,6 +17,8 @@ from datetime import datetime
 from comm.HubClient import ConnectionState, HubClient
 from data.HubMonitor import HubMonitor
 from utils.setup import setup_logging
+import mpy_cross
+from pathlib import Path
 
 logger = logging.getLogger("App")
 
@@ -86,8 +88,27 @@ class RPC:
 
   def get_storage_information(self) -> dict:
     return self.send_message('get_storage_status')
+  
+  def program_compile(self, src_file: str, out_file: str = None, opt: int = 0):
+    cmd = f'-municode {src_file}'
+    if not out_file:
+      out_file = Path(src_file).with_suffix('.mpy')
+    
+    cmd += f' -o {out_file}'
+    
+    if opt != 0 and 0 < opt <= 3:
+      cmd += f' -O{opt}'
+    try:
+      logger.info(f'Executing mpy_cross with args: {cmd}')
+      res = mpy_cross.run(*cmd.split())
+      res.wait()
+    except:
+      logger.warning(f'Failed to compile: {src_file}')
+      return None
+    logger.info(f'Successfully compiled: {src_file}')
+    return out_file
 
-  def program_write(self, file:str, name: str = None, slot: int = 0, vm: bool = False) -> bool:
+  def program_write(self, file:str, name: str = None, slot: int = 0, vm: bool = False, compile: bool = False) -> bool:
     
     def _start_write_program(name, size, slot, created, modified, filename: str = '__init__.py'):
       project_id = self._gen_random_id(12)
@@ -98,8 +119,7 @@ class RPC:
 
     def _write_package(data, transferid):
       return self.send_message('write_package', {'data': str(base64.b64encode(data), 'utf-8'), 'transferid': transferid})
-
-    from pathlib import Path
+    
     filepath = Path(file)
 
     if not filepath.exists():
@@ -108,6 +128,18 @@ class RPC:
 
     is_py = filepath.suffix.lower() == '.py'
     is_mpy = filepath.suffix.lower() == '.mpy'
+    
+    if args.compile:
+      if is_mpy:
+        logger.warning(f'Skip compiling mpy file: {filepath.name}')
+      else:
+        mpy_file = rpc.program_compile(filepath)
+        if mpy_file:
+          is_mpy = True
+          is_py = False
+          filepath = mpy_file
+    
+    logger.info(f'Uploading file: {filepath}')
 
     if not is_py and not is_mpy:
       logger.error(f'File {filepath} is not a valide .py or .mpy file')
@@ -115,8 +147,8 @@ class RPC:
     
     dest_file = '__init__.py' if is_py else '__init__.mpy'
     
-    with open(args.file, "rb") as f:
-      size = os.path.getsize(args.file)
+    with open(filepath, "rb") as f:
+      size = os.path.getsize(filepath)
       name = name if name else file
       now = int(time.time() * 1000)
       start = _start_write_program(name, size, slot, now, now, filename=dest_file)
@@ -191,7 +223,7 @@ if __name__ == "__main__":
     print("Firmware version: %s; Runtime version: %s" % (fw, rt))
   
   def handle_upload():
-    res = rpc.program_write(args.file, args.name, args.to_slot, vm=args.vm)
+    res = rpc.program_write(args.file, args.name, args.to_slot, vm=args.vm, compile=args.compile)
     if not res:
       logger.error(f'Fail to write file: {args.file}')
       return False
@@ -200,7 +232,7 @@ if __name__ == "__main__":
     return True
 
   parser = argparse.ArgumentParser(description='Tools for Spike Hub RPC protocol')
-  parser.add_argument('--verbose', help='print informational messages to console', action='store_true')
+  parser.add_argument('--verbose', '-v', help='print informational messages to console', action='store_true')
   parser.set_defaults(func=lambda: parser.print_help())
   sub_parsers = parser.add_subparsers()
 
@@ -222,6 +254,7 @@ if __name__ == "__main__":
   cpprogram_parser.add_argument('--start', '-s', help='Start after upload', action='store_true')
   cpprogram_parser.add_argument('--wait', '-w', help='Wait for program to finish', action='store_true')
   cpprogram_parser.add_argument('--vm', help='Virtualmachine-based python program', action='store_true')
+  cpprogram_parser.add_argument('--compile', '-c', help='Compile python program before upload', action='store_true')
   cpprogram_parser.set_defaults(func=handle_upload)
 
   rmprogram_parser = sub_parsers.add_parser('rm', help='Removes the program at a given slot')

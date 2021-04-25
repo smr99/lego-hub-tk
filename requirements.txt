@@ -7,3 +7,4 @@ pyqt5
 pyserial 
 pyudev; sys_platform == "linux"
 tqdm  
+mpy-cross==1.13
