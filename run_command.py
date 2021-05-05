@@ -134,7 +134,9 @@ class RPC:
       else:
         import tempfile
         out_file = tempfile.NamedTemporaryFile(suffix='.mpy')
-        mpy_file = rpc.program_compile(filepath, out_file=out_file.name)
+        mpy_name = out_file.name
+        out_file.close()
+        mpy_file = rpc.program_compile(filepath, out_file=mpy_name)
         if mpy_file:
           is_mpy = True
           is_py = False
