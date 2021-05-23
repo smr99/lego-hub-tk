@@ -142,7 +142,6 @@ class HubClient(object):
         msg_string = json.dumps(msg)
         self.send_line(msg_string)
 
-
     def _on_line_received(self, line):
         state = self.state
         line = line.strip()
