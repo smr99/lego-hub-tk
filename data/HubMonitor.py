@@ -2,6 +2,7 @@ import base64
 import logging
 
 from events import Events
+from comm import HubClient
 from data.HubStatus import HubStatus
 from data.NullHubLogger import NullHubLogger
 
@@ -11,8 +12,8 @@ LINE_ENCODING = 'utf-8'
 
 
 class HubMonitor(object):
-    def __init__(self, hub_client) -> None:
-        self._client = hub_client
+    def __init__(self, hub_client: HubClient) -> None:
+        self._client: HubClient = hub_client
         self._status = HubStatus()
         self._executing_program_id = None
 
@@ -63,6 +64,7 @@ class HubMonitor(object):
                 self.logger.program_runstatus_update(timestamp, program_id, is_running)
             elif msgtype == 'userProgram.print':
                 output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING)
+                self._client.send_response(message['i'])
                 logger.info('Program output: %s', output.strip())
                 self.events.console_print(output)
             elif msgtype == 'user_program_error':

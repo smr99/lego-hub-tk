@@ -107,7 +107,7 @@ class HubClient(object):
         letters = string.ascii_letters + string.digits + '_'
         return ''.join(random.choice(letters) for _ in range(length))    
 
-    def send_message(self, name, params = {}):
+    def send_message(self, name:str, params = {}):
         """Send a message and return the response.
         """
         if self.state != ConnectionState.TELEMETRY:
@@ -130,6 +130,18 @@ class HubClient(object):
                 raise ConnectionError(error)
             else:
                 logger.warn('ignored response: ', resp)
+
+    def send_response(self, id: str, response = None):
+        """Send a response.
+        """
+        if self.state != ConnectionState.TELEMETRY:
+            logger.warn('ignoring send request in state %s', self.state)
+            return
+
+        msg = {'i': id, 'r': response}
+        msg_string = json.dumps(msg)
+        self.send_line(msg_string)
+
 
     def _on_line_received(self, line):
         state = self.state
