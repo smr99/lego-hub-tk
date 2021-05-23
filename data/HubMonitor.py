@@ -15,7 +15,7 @@ class HubMonitor(object):
     def __init__(self, hub_client: HubClient) -> None:
         self._client: HubClient = hub_client
         self._status = HubStatus()
-        self._executing_program_id = None
+        self._execution_status = (None, None)
 
         hub_client.events.telemetry_update += self._on_telemetry_update
 
@@ -34,7 +34,7 @@ class HubMonitor(object):
     def connection_state(self): return self._client.state
 
     @property
-    def executing_program_id(self): return self._executing_program_id
+    def execution_status(self): return self._execution_status
 
     def _on_telemetry_update(self, timestamp, message):
         message_recognized = True
@@ -43,6 +43,9 @@ class HubMonitor(object):
             if msgtype == 0:
                 self._status.set_status0(message['p'])
                 self.logger.telemetry_update(timestamp, message, self.status)
+            elif msgtype == 1:
+                # TODO handle m:1 (storage status)
+                pass
             elif msgtype == 2:
                 self._status.set_status2(message['p'])
                 self.logger.telemetry_update(timestamp, message, self.status)
@@ -57,15 +60,13 @@ class HubMonitor(object):
             elif msgtype == 12:
                 (program_id, is_running) = message['p']
                 logger.info('Program ID %s changed run state to %s', program_id, is_running)
-                if is_running:
-                    self._executing_program_id = program_id
-                else:
-                    self._executing_program_id = None
+                self._execution_status = (program_id, is_running)
                 self.logger.program_runstatus_update(timestamp, program_id, is_running)
             elif msgtype == 'userProgram.print':
                 output = base64.b64decode(message['p']['value']).decode(LINE_ENCODING)
                 self._client.send_response(message['i'])
                 logger.info('Program output: %s', output.strip())
+                self._client.send_response(message['i'])
                 self.events.console_print(output)
             elif msgtype == 'user_program_error':
                 params = message['p']

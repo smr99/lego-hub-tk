@@ -130,7 +130,7 @@ class HubClient(object):
                 raise ConnectionError(error)
             else:
                 logger.warn('ignored response: ', resp)
-
+                
     def send_response(self, id: str, response = None):
         """Send a response.
         """
