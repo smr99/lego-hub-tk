@@ -1,12 +1,12 @@
 ![Logo of the project](logo.jpg)
 
 # LEGO Hub Toolkit
-> Pythonic connector for the LEGO Mindstorms/Spike Prime robot hub
+> Pythonic connector for the LEGO Mindstorms/Spike Prime robot hub (Linux, Mac, Windows)
 
 The LEGO Mindstorms Robot Inventor kit (51515) is powered by a hub that contains a programmable micropython-based microprocessor.  The LEGO Hub Toolkit provides a python communications library that enables a PC to connect to the Hub using USB and/or Bluetooth.  On top of this communications library are some tools that let you monitor the reobot's sensors while it runs as well as to download, start, and stop programs on the hub. 
 
 The toolkit fulfils a couple of use cases not provided by LEGO's tools.
-1. Writing code for the robot using a linux PC.
+1. Writing code for the robot using a linux or Mac PC.
 1. Writing a custom application to monitor the robot state as it moves about the world.
 
 The communications library is designed to maintain a connection with the hub, using either USB or Bluetooth with automatic switchover from USB to Bluetooth and vice-versa.  On top of the communications is a client layer that provides classes to encode and decode the hub messages and to maintain the hub state on the PC side.  The hub state includes the onboard gyroscope sensor values as well as the motors and sensors currently plugged into the hub's ports.  On top of the client layer are a couple of example applications to demonstrate monitoring and control.
@@ -100,6 +100,8 @@ If any the above instructions are unclear or incorrect, please do open an issue.
 
 If you'd like to contribute, please fork the repository and use a feature
 branch. Pull requests are warmly welcome.
+
+Thanks to Eric T. ([ws1088](https://github.com/ws1088)) for Mac & Windows support and many other improvements!
 
 ## Links
 
