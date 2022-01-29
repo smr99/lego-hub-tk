@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from events import Events
+import logging
+#from events import Events
+logger = logging.getLogger(__name__)
 
 class Connection(ABC):
     """Abstractly, a Connection is a class that provides data communications with the LEGO Hub.
@@ -7,7 +9,8 @@ class Connection(ABC):
 
     def __init__(self):
 
-        self.events = Events(('line_received'))
+        #self.events = Events(('line_received'))
+        logger.info('line_received')
         """Events raised by a Connection:
 
             line_recieved(line : bytearray) - provides raw text received from hub.

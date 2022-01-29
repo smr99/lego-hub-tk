@@ -1,7 +1,7 @@
 import logging
 from comm.ConnectionMonitor import ConnectionMonitor
 
-from events import Events
+#from events import Events
 
 logger = logging.getLogger(__name__)
 

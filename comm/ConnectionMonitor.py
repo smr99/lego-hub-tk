@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import logging
 import threading
 
-from events import Events
+#from events import Events
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,8 @@ class ConnectionMonitor(ABC):
         self._connection = None
 
         self._thread_work = thread_work
-        self.events = Events(('connection_changed'))
+        #self.events = Events(('connection_changed'))
+        logger.info('connection changed')
         """Event indicates change in connection availability.
         
         Event arguments:
