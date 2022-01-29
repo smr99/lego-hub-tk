@@ -27,6 +27,8 @@ pip3 install -r requirements.txt
 ```
 Check if any errors during install they will need to be corrected before proceeding.
 
+for notes on  returements for debian/raspberry-pi see section below.
+
 Connect the hub using USB.  
 
 List the programs currently stored on the hub:
@@ -99,6 +101,17 @@ A window should open displaying the hub status details of the connection type, o
 ### Python scripting
 
 See the [API Design documentation](design.md).
+
+### Raspberry Pi 
+
+the following is needed for linux, and raspberry-pi
+
+```shell
+sudo apt-get install bluetooth libbluetooth-dev
+sudo python3 -m pip install pybluez
+```
+
+after all packages are confirmed installed you may need to add `export PATH="$HOME/bin:$PATH"`
 
 ## Contributing
 
