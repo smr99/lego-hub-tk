@@ -25,6 +25,9 @@ Install pre-requisite Python packages.
 ```shell
 pip3 install -r requirements.txt
 ```
+Check if any errors during install they will need to be corrected before proceeding.
+
+for notes on  returements for debian/raspberry-pi see section below.
 
 Connect the hub using USB.  
 
@@ -49,18 +52,23 @@ Slot Decoded Name                               Size Last Modified        Projec
 
 Additional configuration is required to use Bluetooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
+   - also see https://dwalton76.github.io/spikedev/repl.html
 1. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
+   - darwin shell can provide a list `system_profiler SPBluetoothDataType`
+   - linux `hciconfig` 
 1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
-    * For linux, this will be ~/.config/lego-hub-tk/
+   - For linux, this will be `mkdir ~/.config/lego-hub-tk/`
 1. Copy the file lego_hub.yaml to the newly-created directory.
+   - For linix, this will be `cp lego_hub.yaml ~/.config/lego-hub-tk/lego_hub.yaml`
 1. Edit your copy of lego_hub.yaml to set the correct Bluetooth address.
+   - For linix, this will be `nano ~/.config/lego-hub-tk/lego_hub.yaml`
 
 
 ## Features
 
 ### Runing code on the hub - command line
 
-When plugged in via USB, the command-line script run_command can
+When plugged in via USB, the python3 script `run_command.py` can
 * list programs stored on the hub
 * upload a program to the hub
 * start a program on the hub
@@ -93,6 +101,17 @@ A window should open displaying the hub status details of the connection type, o
 ### Python scripting
 
 See the [API Design documentation](design.md).
+
+### Raspberry Pi 
+
+the following is needed for linux, and raspberry-pi
+
+```shell
+sudo apt-get install bluetooth libbluetooth-dev
+sudo python3 -m pip install pybluez
+```
+
+after all packages are confirmed installed you may need to add `export PATH="$HOME/bin:$PATH"`
 
 ## Contributing
 
