@@ -25,6 +25,7 @@ Install pre-requisite Python packages.
 ```shell
 pip3 install -r requirements.txt
 ```
+Check if any errors during install they will need to be corrected before proceeding.
 
 Connect the hub using USB.  
 
@@ -49,8 +50,10 @@ Slot Decoded Name                               Size Last Modified        Projec
 
 Additional configuration is required to use Bluetooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
+   - also see https://dwalton76.github.io/spikedev/repl.html
 1. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
    - darwin shell can provide a list `system_profiler SPBluetoothDataType`
+   - linux `hciconfig` 
 1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
    - For linux, this will be `mkdir ~/.config/lego-hub-tk/`
 1. Copy the file lego_hub.yaml to the newly-created directory.
