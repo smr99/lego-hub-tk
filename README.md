@@ -58,7 +58,7 @@ If using Bluetooth:
    - also see https://dwalton76.github.io/spikedev/repl.html
 2. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
    - darwin shell can provide a list `system_profiler SPBluetoothDataType`
-   - linux `hciconfig` 
+   - linux `hciconfig` `hcitool -i hci0 scan`
 
 Create and edit the configuration file:
 
