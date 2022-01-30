@@ -21,13 +21,12 @@ The example shell commands below are shown as for a linux shell command line.
 The toolkit is written in Python.  You will need Python installed (toolkit is currently developed using Python 3.9).  
 
 Install pre-requisite Python packages.
+for notes on requirements for debian/raspberry-pi see [section below](#raspberry-pi).
 
 ```shell
 pip3 install -r requirements.txt
 ```
 Check if any errors during install they will need to be corrected before proceeding.
-
-for notes on  returements for debian/raspberry-pi see section below.
 
 Connect the hub using USB.  
 
@@ -57,7 +56,7 @@ If the auto-detection does not work on your system, or if you wish to use blueto
 If using Bluetooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
    - also see https://dwalton76.github.io/spikedev/repl.html
-1. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
+2. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
    - darwin shell can provide a list `system_profiler SPBluetoothDataType`
    - linux `hciconfig` 
 
@@ -65,9 +64,9 @@ Create and edit the configuration file:
 
 1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
    - For linux, this will be `mkdir ~/.config/lego-hub-tk/`
-1. Copy the template file lego_hub.yaml to the newly-created directory.
+2. Copy the file lego_hub.yaml to the newly-created directory.
    - For linix, this will be `cp lego_hub.yaml ~/.config/lego-hub-tk/lego_hub.yaml`
-1. Edit your copy of lego_hub.yaml, following the notes in the template file.
+3. Edit your copy of lego_hub.yaml to set the correct Bluetooth address.
    - For linix, this will be `nano ~/.config/lego-hub-tk/lego_hub.yaml`
 
 
@@ -110,7 +109,7 @@ See the [API Design documentation](design.md).
 
 ### Raspberry Pi 
 
-the following is needed for linux, and raspberry-pi
+the following is needed for linux, and raspberry-pi before installing project requirements.
 
 ```shell
 sudo apt-get install bluetooth libbluetooth-dev
