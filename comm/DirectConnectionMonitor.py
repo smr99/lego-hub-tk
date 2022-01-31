@@ -9,7 +9,8 @@ logger = logging.getLogger(__name__)
 class DirectConnectionMonitor(ConnectionMonitor):
     """Null implementation of a ConnectionMonitor that provides access to one device only.
 
-    When the scan is initiated, this device is "detected" and never removed thereafter.
+    When the scan is initiated, the connection_changed event is raised to indicate this device
+    is "detected" (whether or not the hub is connected).  No further events are raised.
 
     Arguments:
         connection : Connection

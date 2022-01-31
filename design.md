@@ -68,18 +68,20 @@ The user can customize the data to log in either of these classes, or can write 
 
 ## Connection Layer
 
-This layer provides the mechanism that HubClient uses to communicate with the hub.
+This layer provides the mechanism that HubClient uses to communicate with the hub.  
+
+Typically, the connection will be specified by run-time configuration as described in the README.  If you wish to bypass the runtime configuration, create a ConnectionMonitor and pass it into the HubClient constructor.
 
 ### ConnectionMonitor
 
-The connection monitor is responsible for monitoring a type of connection -- either USB or Bluetooth -- for the hub.  When the hub is discovered, the connection monitor raises an event.  
+The connection monitor is responsible for monitoring a type of connection -- either USB or Bluetooth -- for the hub.  When the hub is discovered, the connection monitor raises an event.  Similarly, an event is raised if the hub is disconnected.
 
 There are three concrete implementations of the ConnectionMonitor that support hub connect/disconnect and power cycling:
 * UsbConnectionMonitor - monitors USB bus
 * BluetoothConnectionMonitor - monitors Bluetooth
 * MultiplexedConnectionMonitor - monitors both USB and Bluetooth
 
-Additionally, for the case that you do not desire the monitoring capability (or the code does not work on your platform), the DirectConnectionMonitor can be used to provide a ConnectionMonitor wrapper around a simple connection, e.g. a serial port.
+Additionally, for the case that you do not desire the monitoring capability (or the code does not work on your platform), the DirectConnectionMonitor can be used to provide a ConnectionMonitor wrapper around a simple connection, e.g. a serial port.  This implementation does not handle hub disconnect/re-connect.  It is useful for a simple one-shot application and for platforms that don't have an implementation of the above USB or Bluetooth connection monitors.
 
 Application code will normally only instantiate one of the ConnectionMonitor objects in order to pass into the HubClient initializer.  For example:
 

@@ -4,14 +4,10 @@
 # Guts were lifted from spikeprime-tools/spiketools/spikejsonrpcapispike.py
 
 import base64
-from comm.DirectConnectionMonitor import DirectConnectionMonitor
-from comm.UsbConnectionMonitor import UsbConnectionMonitor
-from comm.SerialConnection import SerialConnection
 import os
 import argparse
 from tqdm import tqdm
 import time
-import json
 import logging
 from datetime import datetime
 from comm.HubClient import ConnectionState, HubClient
@@ -25,10 +21,7 @@ logger = logging.getLogger("App")
 
 class RPC:
   def __init__(self):
-    cm = UsbConnectionMonitor()
-    # below is an alternative if the USB scanning does not work
-    #cm = DirectConnectionMonitor(SerialConnection("/dev/ttyACM0"))
-    self._client = HubClient(cm)
+    self._client = HubClient()
     self._hm = HubMonitor(self._client)
     self._hm.events.console_print += self._console_print
     self._client.start()

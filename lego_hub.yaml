@@ -1,7 +1,34 @@
 # Settings for the LEGO hub
 
-# Set the BlueTooth address and port of the RFCOMM function.
+# Connection to Hub
+# =================
+#
+# The connection can be configured to use serial, bluetooth, or both (with failover).
+# This is specified using the key 'connection' with one of the following values: serial, bluetooth, multiplexed
+#
+# There are additional configuration parameters for the serial and bluetooth devices.  
+# Below are the four common configuration scenarios.  Uncomment the one you desire and fill
+# in device characteristics for your system.
 
-bluetooth:
-  address: '38:0B:3C:AA:B6:CE'
-  port: 1
+
+# Configuration for serial on automatically-determined port
+#connection: serial
+
+# Configuration for serial on specified port
+#connection: serial
+#serial:
+#  device: '/dev/ttyS3'
+
+# Configuration for bluetooth
+# Set the BlueTooth address and port of the RFCOMM function.
+#connection: bluetooth
+#bluetooth:
+#  address: '38:0B:3C:AA:B6:CE'
+#  port: 1
+
+# Configuration for multiplexed between serial and bluetooth with failover
+# Set the BlueTooth address and port of the RFCOMM function.
+#connection: multiplexed
+#bluetooth:
+#  address: '38:0B:3C:AA:B6:CE'
+#  port: 1

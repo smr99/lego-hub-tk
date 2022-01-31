@@ -1,8 +1,8 @@
+import comm.ConnectionFactory
 from comm.Connection import Connection
 import appdirs
 import cfg_load
 import base64
-from comm.MultiplexedConnectionMonitor import MultiplexedConnectionMonitor
 from utils.LockedCounter import LockedCounter
 from comm.NullConnection import NullConnection
 import datetime
@@ -23,7 +23,7 @@ if os.path.exists(config_file):
 else:
     # dummy config
     logger.warn('Configuration file does not exist: %s', config_file)
-    config = {'bluetooth': {'address': None, 'port': 0}}
+    config = {}
 
 LINE_ENCODING = 'utf-8'
 
@@ -46,13 +46,16 @@ class HubClient(object):
     
     """
 
-    def __init__(self, cm = MultiplexedConnectionMonitor(config['bluetooth']['address'], config['bluetooth']['port'])):
+    def __init__(self, cm = None):
         self._response_queue = Queue()
         self.events = Events(('connection_state_changed', 'telemetry_update'))
         self._id_counter = LockedCounter(1000)
 
         self.state = ConnectionState.DISCONNECTED
         """state of the hub connection"""
+
+        if cm is None:
+            cm = comm.ConnectionFactory.make_connection_monitor(config)
 
         self._connection_monitor = cm
         self._connection_monitor.events.connection_changed += self._connection_changed

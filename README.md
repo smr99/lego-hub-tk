@@ -48,19 +48,26 @@ Slot Decoded Name                               Size Last Modified        Projec
   11 Winner! 6                                 7226b 2020-12-29 22:00:17  cis5eAYFX5bd scratch   
 ```
 
-## Initial Configuration
+## Configuration
 
-Additional configuration is required to use Bluetooth:
+Out of the box, the software uses the USB cable to connect to the hub.  It will automatically determine the correct USB device.  
+
+If the auto-detection does not work on your system, or if you wish to use bluetooth, the connection can be specified by configuration file.
+
+If using Bluetooth:
 1. Pair the hub with your system.  Use your system's regular tool for doing this.
    - also see https://dwalton76.github.io/spikedev/repl.html
 1. Obtain the hub's Bluetooth address -- likely using the same tool as in the previous step.  It will be in the form of six hexadecimal number separated by colons; e.g. 38:0B:3C:AA:B6:CE
    - darwin shell can provide a list `system_profiler SPBluetoothDataType`
    - linux `hciconfig` 
+
+Create and edit the configuration file:
+
 1. Locate the correct user_config_dir for your system (see https://pypi.org/project/appdirs/) and create a sub-directory named 'lego-hub-tk'.
    - For linux, this will be `mkdir ~/.config/lego-hub-tk/`
-1. Copy the file lego_hub.yaml to the newly-created directory.
+1. Copy the template file lego_hub.yaml to the newly-created directory.
    - For linix, this will be `cp lego_hub.yaml ~/.config/lego-hub-tk/lego_hub.yaml`
-1. Edit your copy of lego_hub.yaml to set the correct Bluetooth address.
+1. Edit your copy of lego_hub.yaml, following the notes in the template file.
    - For linix, this will be `nano ~/.config/lego-hub-tk/lego_hub.yaml`
 
 
@@ -68,7 +75,7 @@ Additional configuration is required to use Bluetooth:
 
 ### Runing code on the hub - command line
 
-When plugged in via USB, the python3 script `run_command.py` can
+The python3 script `run_command.py` can
 * list programs stored on the hub
 * upload a program to the hub
 * start a program on the hub
@@ -84,8 +91,7 @@ python3 run_program.py stop
 
 ### Runing code on the hub - GUI
 
-The GUI program hubcontrol can be used to run a program on the hub and display the console output and status while it runs.  Unlike `run_command`, this
-program connects via Bluetooth as well as USB, so it can monitor and control the hub as it runs untethered.
+The GUI program hubcontrol can be used to run a program on the hub and display the console output and status while it runs.  
 
 ### Monitoring running hub
 
