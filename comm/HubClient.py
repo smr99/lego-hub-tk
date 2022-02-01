@@ -21,27 +21,9 @@ if os.path.exists(config_file):
     logger.info('Loading configuration from %s', config_file)
     config = cfg_load.load(config_file)
 else:
-     # dummy config
-    template = """
-    # Settings for the LEGO-hub-tk
-    # Set the BlueTooth address and port of the RFCOMM function.
-    bluetooth:
-      address: '38:0B:3C:AA:B6:CE'
-      port: 0
-    """ 
-
+    # dummy config
     logger.warn('Configuration file does not exist: %s', config_file)
-
-    try:
-        os.makedirs(os.path.dirname(config_file), exist_ok=True)
-        with open(config_file, "w+") as f:
-            f.writelines(template)
-        f.close
-        logger.warn('Configuration created: %s', config_file)
-    except:
-        logger.warn('Configuration file could not be created: %s', config_file)
-
-    config = {'bluetooth': {'address': None, 'port': 0}}
+    config = {}
 
 LINE_ENCODING = 'utf-8'
 
