@@ -1,6 +1,5 @@
 import logging
 from comm.Connection import Connection
-from bluetooth import *
 import threading
 import select
 import socket
@@ -35,10 +34,10 @@ class BluetoothConnection(Connection):
         logger.debug('open socket to %s port %s', self.address, self.port)
         self._opencloselock.acquire()
         try:
-            socket = BluetoothSocket(RFCOMM)
-            socket.connect((self.address, self.port))
-            socket.setblocking(False)
-            self._socket = socket
+            s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+            s.connect((self.address, self.port))
+            s.setblocking(False)
+            self._socket = s
             self._start_monitor_loop()
         finally:
             self._opencloselock.release()
