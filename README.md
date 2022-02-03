@@ -126,7 +126,9 @@ If any the above instructions are unclear or incorrect, please do open an issue.
 If you'd like to contribute, please fork the repository and use a feature
 branch. Pull requests are warmly welcome.
 
-Thanks to Eric T. ([ws1088](https://github.com/ws1088)) for Mac & Windows support and many other improvements!
+Thanks to:
+- Eric T. ([ws1088](https://github.com/ws1088)) for Mac & Windows support and many other improvements!
+- Kelly ([SpudGunMan](https://github.com/SpudGunMan)) for design & doc suggestions
 
 ## Links
 
