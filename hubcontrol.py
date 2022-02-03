@@ -167,7 +167,6 @@ class MainWindow(QMainWindow):
     def refresh(self):
         is_connected = self._client.state == ConnectionState.TELEMETRY
         is_connected_usb = is_connected and self._hub_monitor.status.is_usb_connected
-        self.list_button.setEnabled(is_connected_usb)
         self.position_widget.refresh()
         self.motion_widget.refresh()
         self.port_widget.refresh()
