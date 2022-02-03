@@ -16,37 +16,41 @@ The LEGO Spike Prime kit apparently uses the same hub -- this toolkit was inspir
 
 ## Getting started
 
-The example shell commands below are shown as for a linux shell command line.  
+The example shell commands below are shown as for a linux shell command line.
+
+### Python and Bluetooth
 
 The toolkit is written in Python.  You will need Python installed (toolkit is currently developed using Python 3.9).  
 
+The software can communicate with the hub using either USB or Bluetooth.  If you wish to connect to the Hub using Bluetooth, you will need the relevant packages installed.
+
+For linux / raspberry pi:
+
+```shell
+sudo apt-get install python3.9 bluetooth libbluetooth-dev
+```
+
+### Python Packages
+
 Install pre-requisite Python packages.
+
+Either install the minimal set of packages:
 
 ```shell
 pip3 install -r requirements.txt
 ```
-Check if any errors during install they will need to be corrected before proceeding.
 
-for notes on  returements for debian/raspberry-pi see section below.
-
-Connect the hub using USB.  
-
-List the programs currently stored on the hub:
+Or install the full set of packages, which will facilitate optional functionality:
 
 ```shell
-python3 run_command.py ls
-Slot Decoded Name                               Size Last Modified        Project_id   Type      
-   0 Zero motors                                733b 2020-12-30 04:02:45  lmlJdiW3kVR2 scratch   
-   1 MR1 - Line Follower                       3641b 2020-12-31 17:47:18  T8g7vJ4jYExt python    
-   2 MR1 - Wanderer                            2650b 2020-12-31 17:47:49  GzcKr5xPBJrQ python    
-   3 MR1 - Connect the Dots                    4375b 2021-01-01 02:11:06  Qm_0zJkWgkGM python    
-   4 MR1 - Navigator 1                        13563b 2021-01-04 05:20:15  sUtzpgAokATv python    
-   5 Project 3                                  128b 2021-01-02 18:52:18  bGz62LGIzCOl python    
-   6 Guard my room 3                           8115b 2020-12-29 17:16:28  kDj0zNTjueJV scratch   
-   8 Grab and move                             8949b 2020-12-30 03:49:16  V12C35ra2EdG scratch   
-  10 Hi World                                    13b 2021-02-01 04:05:14  50uN1ZaRpHj2 python    
-  11 Winner! 6                                 7226b 2020-12-29 22:00:17  cis5eAYFX5bd scratch   
+pip3 install -r requirements-full.txt
 ```
+
+At the time of writing, the optional functionality includes:
+- autodetection of the Bluetooth link / failover to USB
+
+Check if any errors during install they will need to be corrected before proceeding.
+
 
 ## Configuration
 
@@ -70,6 +74,25 @@ Create and edit the configuration file:
 1. Edit your copy of lego_hub.yaml, following the notes in the template file.
    - For linix, this will be `nano ~/.config/lego-hub-tk/lego_hub.yaml`
 
+## First Test
+Connect the hub using USB.  
+
+List the programs currently stored on the hub:
+
+```shell
+python3 run_command.py ls
+Slot Decoded Name                               Size Last Modified        Project_id   Type      
+   0 Zero motors                                733b 2020-12-30 04:02:45  lmlJdiW3kVR2 scratch   
+   1 MR1 - Line Follower                       3641b 2020-12-31 17:47:18  T8g7vJ4jYExt python    
+   2 MR1 - Wanderer                            2650b 2020-12-31 17:47:49  GzcKr5xPBJrQ python    
+   3 MR1 - Connect the Dots                    4375b 2021-01-01 02:11:06  Qm_0zJkWgkGM python    
+   4 MR1 - Navigator 1                        13563b 2021-01-04 05:20:15  sUtzpgAokATv python    
+   5 Project 3                                  128b 2021-01-02 18:52:18  bGz62LGIzCOl python    
+   6 Guard my room 3                           8115b 2020-12-29 17:16:28  kDj0zNTjueJV scratch   
+   8 Grab and move                             8949b 2020-12-30 03:49:16  V12C35ra2EdG scratch   
+  10 Hi World                                    13b 2021-02-01 04:05:14  50uN1ZaRpHj2 python    
+  11 Winner! 6                                 7226b 2020-12-29 22:00:17  cis5eAYFX5bd scratch   
+```
 
 ## Features
 
@@ -108,16 +131,8 @@ A window should open displaying the hub status details of the connection type, o
 
 See the [API Design documentation](design.md).
 
-### Raspberry Pi 
 
-the following is needed for linux, and raspberry-pi
-
-```shell
-sudo apt-get install bluetooth libbluetooth-dev
-sudo python3 -m pip install pybluez
-```
-
-after all packages are confirmed installed you may need to add `export PATH="$HOME/bin:$PATH"`
+After all packages are confirmed installed you may need to add `export PATH="$HOME/bin:$PATH"`
 
 ## Contributing
 

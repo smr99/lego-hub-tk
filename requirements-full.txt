@@ -1,2 +1,2 @@
 -r requirements.txt
-ipykernel
+pybluez2

@@ -1,7 +1,6 @@
 appdirs
 cfg_load
 events 
-pybluez2
 pyobjc-framework-libdispatch; sys_platform == 'darwin' 
 pyqt5 
 pyserial 
